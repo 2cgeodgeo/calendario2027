@@ -357,13 +357,14 @@ DADOS.forEach((item, i)=>{
 
   const temImagem = item.img && item.img.trim() !== "";
   const conteudoImagem = temImagem
-    ? `<img src="${item.img}" alt="${item.place}">`
+    ? `<div class="placeholder" style="--tone-a:${item.tones[0]};--tone-b:${item.tones[1]};--tone-c:${item.tones[2]}"></div>
+       <img src="${item.img}" alt="${item.place}" style="position:absolute;inset:0;" onerror="this.style.display='none'">`
     : `<div class="placeholder" style="--tone-a:${item.tones[0]};--tone-b:${item.tones[1]};--tone-c:${item.tones[2]}">
         <div class="coords">${item.coords}</div>
         <div class="ph-note">SEM IMAGEM AINDA.<br>Preencha img:"0${i+1}-imagem.jpg" nos DADOS<br>com a imagem de satélite real de<br><strong>${item.place}, ${item.uf}</strong></div>
       </div>`;
   const monthBg = temImagem
-    ? `background-image:url('${item.img}');`
+    ? `background-image:url('${item.img}'), linear-gradient(160deg, ${item.tones[0]}, ${item.tones[1]} 60%, ${item.tones[2]});`
     : `background-image:linear-gradient(160deg, ${item.tones[0]}, ${item.tones[1]} 60%, ${item.tones[2]});`;
 
   page.innerHTML = `
