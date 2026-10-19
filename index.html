@@ -207,8 +207,14 @@
     flex:1;
     min-height:64px;
     border-radius:10px;
-    background: rgba(255,255,255,0.55);
-    border: 1px solid rgba(255,255,255,0.7);
+    background-color: rgba(255,255,255,0.20);
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0, transparent 21px,
+      color-mix(in srgb, var(--sidebar-fg, #1b1d18) 30%, transparent) 21px,
+      color-mix(in srgb, var(--sidebar-fg, #1b1d18) 30%, transparent) 22px
+    );
+    border: 1px solid rgba(255,255,255,0.40);
   }
 
   .side-bottom{
