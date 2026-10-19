@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Calendário Brasil 2027 — Vistas de Satélite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#eef0ea;
+    --ink:#1b1d18;
+    --line: rgba(0,0,0,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:#3a3d35;
+    font-family:'Inter', sans-serif;
+    padding:40px 0 120px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:36px;
+  }
+  .intro{
+    width:1280px;
+    max-width:94vw;
+    color:#eef0ea;
+    padding:0 8px 8px;
+  }
+  .intro h1{
+    font-family:'Archivo Black', sans-serif;
+    font-size:28px;
+    letter-spacing:0.5px;
+    margin-bottom:6px;
+  }
+  .intro p{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    opacity:0.75;
+    line-height:1.6;
+    max-width:760px;
+  }
+
+  .page{
+    width:1280px;
+    max-width:94vw;
+    aspect-ratio: 16/9;
+    background:var(--paper);
+    position:relative;
+    overflow:hidden;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+  }
+
+  /* ---- image area (placeholder — substitua pela imagem de satélite real) ---- */
+  .frame{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+    z-index:1;
+  }
+  .frame img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .placeholder{
+    width:100%;
+    height:100%;
+    position:relative;
+    background:
+      radial-gradient(circle at 30% 25%, rgba(255,255,255,0.10), transparent 45%),
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 26px),
+      linear-gradient(160deg, var(--tone-a), var(--tone-b) 60%, var(--tone-c));
+  }
+  .placeholder::after{
+    content:"";
+    position:absolute; inset:0;
+    background: repeating-linear-gradient(25deg, rgba(0,0,0,0.05) 0 3px, transparent 3px 34px);
+    mix-blend-mode:multiply;
+  }
+  .ph-note{
+    position:absolute;
+    left:24px; bottom:22px;
+    max-width:60%;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    line-height:1.55;
+    color:rgba(255,255,255,0.92);
+    background:rgba(0,0,0,0.30);
+    padding:10px 12px;
+    border:1px dashed rgba(255,255,255,0.55);
+  }
+  .coords{
+    position:absolute;
+    left:24px; top:22px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.5px;
+    color:rgba(255,255,255,0.85);
+    background:rgba(0,0,0,0.25);
+    padding:5px 9px;
+  }
+
+  /* ---- sidebar ---- */
+  .side{
+    width:270px;
+    flex-shrink:0;
+    position:absolute;
+    top:0; right:0; bottom:0;
+    z-index:2;
+    background: color-mix(in srgb, var(--sidebar-bg, #dfe3d6) 58%, transparent);
+    backdrop-filter: blur(7px) saturate(115%);
+    -webkit-backdrop-filter: blur(7px) saturate(115%);
+    padding:26px 22px 20px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    border-left: 1px solid rgba(255,255,255,0.18);
+  }
+  .side-top .month{
+    font-family:'Archivo Black', sans-serif;
+    font-size:82px;
+    line-height:0.85;
+    letter-spacing:1px;
+    text-align:center;
+    width:100%;
+    background-size:cover;
+    background-position:center;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .side-top .place{
+    margin-top:14px;
+    font-family:'Barlow Condensed', sans-serif;
+    font-weight:600;
+    font-size:19px;
+    color: var(--sidebar-fg, #1b1d18);
+    line-height:1.15;
+    text-shadow: 0 1px 8px rgba(255,255,255,0.35);
+  }
+  .side-top .credit{
+    margin-top:6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color: var(--sidebar-fg, #1b1d18);
+    opacity:0.7;
+  }
+  .side-top .season{
+    margin-top:10px;
+    font-family:'Inter', sans-serif;
+    font-size:11.5px;
+    color: var(--sidebar-fg, #1b1d18);
+    opacity:0.65;
+    line-height:1.4;
+  }
+
+  .cal{
+    margin-top:22px;
+    border-top:1px solid var(--sidebar-line, rgba(0,0,0,0.2));
+    padding-top:12px;
+  }
+  .cal table{ width:100%; border-collapse:collapse; }
+  .cal th, .cal td{
+    text-align:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    padding:4px 0;
+    color: var(--sidebar-fg, #1b1d18);
+  }
+  .cal th{
+    opacity:0.55;
+    font-weight:500;
+    font-size:10.5px;
+  }
+  .cal td.other{ opacity:0.28; }
+  .cal td.weekend{ opacity:0.6; }
+  .cal td.feriado{
+    font-weight:700;
+  }
+  .holidays{
+    margin-top:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    line-height:1.6;
+    color: var(--sidebar-fg, #1b1d18);
+    opacity:0.8;
+  }
+  .holidays div{ display:flex; gap:6px; }
+  .holidays .dot{
+    width:4px;height:4px;border-radius:50%;
+    background:var(--sidebar-fg,#1b1d18);
+    margin-top:6px; flex-shrink:0;
+  }
+  .notes{ margin-top:16px; }
+  .notes .label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:9.5px;
+    letter-spacing:1.5px;
+    opacity:0.5;
+    color: var(--sidebar-fg, #1b1d18);
+    margin-bottom:6px;
+  }
+  .notes .box{
+    height:64px;
+    border-radius:10px;
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(255,255,255,0.7);
+  }
+
+  .side-bottom{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-top:16px;
+  }
+  .brand{
+    font-family:'Archivo Black', sans-serif;
+    font-size:13px;
+    letter-spacing:2px;
+    color: var(--sidebar-fg, #1b1d18);
+    opacity:0.85;
+  }
+  .brand span{ opacity:0.5; }
+
+  @media print{
+    body{ background:none; padding:0; gap:0; }
+    .intro{ display:none; }
+    .page{ box-shadow:none; page-break-after: always; width:100%; aspect-ratio:auto; height:100vh; }
+  }
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <h1>Calendário 2027 — Brasil visto do satélite</h1>
+  <p>ÁREA: DF · GO · MT · MS — 12 QUADROS, CADA MÊS REPRESENTANDO UMA LINGUAGEM VISUAL
+  DIFERENTE DO CENTRO-OESTE (ÁGUA, RELEVO, GEOMETRIA AGRÍCOLA, TECIDO URBANO).<br>
+  SUBSTITUA O BLOCO ".placeholder" PELA IMAGEM REAL (&lt;img src="sua-imagem.jpg"&gt;)
+  BAIXADA DO SENTINEL HUB / COPERNICUS BROWSER / GOOGLE EARTH.</p>
+</div>
+
+<div id="calendar-root"></div>
+
+<script>
+const MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const MESES_ABREV = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
+const DIAS = ["D","S","T","Q","Q","S","S"]; // Domingo a Sábado
+
+// Feriados nacionais 2027 (mesIndex 0-based: 0=Janeiro ... 11=Dezembro)
+const FERIADOS = {
+  "0-1": "Confraternização Universal",
+  "1-8": "Carnaval",
+  "1-9": "Carnaval",
+  "2-26": "Sexta-feira Santa",
+  "3-21": "Tiradentes",
+  "4-1": "Dia do Trabalho",
+  "4-27": "Corpus Christi",
+  "8-7": "Independência do Brasil",
+  "9-12": "Nossa Senhora Aparecida",
+  "10-2": "Finados",
+  "10-15": "Proclamação da República",
+  "10-20": "Consciência Negra",
+  "11-25": "Natal",
+  "7-3": "Dia do Quadro de Engenheiros Militares (QEM)",
+  "7-25": "Dia do Soldado",
+  "9-17": "Dia do Serviço de Topografia",
+  "10-19": "Dia da Bandeira",
+  "4-31": "Aniversário da DSG",
+  "9-1": "Aniversário do 2º CGEO",
+};
+
+// tone-a / tone-b / tone-c = gradiente do placeholder | sidebarBg/sidebarFg = cores da lateral
+// Para colocar sua imagem real: preencha o campo "img" com o nome do arquivo
+// (ex: img:"01-brasilia.jpg"), que deve estar NA MESMA PASTA que este arquivo HTML.
+// Enquanto "img" estiver vazio (""), o placeholder colorido continua aparecendo.
+const DADOS = [
+  { place:"Pantanal — mosaico de vazantes e corixos", uf:"MT", coords:"16.60°S 56.70°O", img:"",
+    tones:["#2e5a52","#1c3b38","#122522"], sidebarBg:"#d7e2df", sidebarFg:"#132825" },
+  { place:"Nhecolândia — campos de lagoas", uf:"MS", coords:"18.99°S 56.62°O", img:"",
+    tones:["#1f6a63","#124842","#0a2b27"], sidebarBg:"#cfe6e1", sidebarFg:"#0d2e29" },
+  { place:"Represa de Nova Ponte", uf:"Triângulo Mineiro, MG", coords:"19.17°S 47.67°O", img:"",
+    tones:["#2c5a6b","#1a3a46","#10242c"], sidebarBg:"#d2e2e6", sidebarFg:"#11262c" },
+  { place:"Serra do Amolar", uf:"MS", coords:"17.83°S 57.50°O", img:"",
+    tones:["#4a5c3e","#313f27","#1c2417"], sidebarBg:"#dee5d3", sidebarFg:"#232c16" },
+  { place:"Serra da Bodoquena", uf:"MS", coords:"21.20°S 56.47°O", img:"",
+    tones:["#2f6a48","#1c452e","#10291c"], sidebarBg:"#d6e7db", sidebarFg:"#12301f" },
+  { place:"Chapada dos Guimarães — escarpas", uf:"MT", coords:"15.41°S 55.83°O", img:"",
+    tones:["#8b4a2b","#5e321d","#3a1f12"], sidebarBg:"#ecd9c9", sidebarFg:"#3a2113" },
+  { place:"Chapada dos Veadeiros", uf:"GO", coords:"14.10°S 47.65°O", img:"",
+    tones:["#6b5a2c","#4a3d1e","#2e2512"], sidebarBg:"#e6ddc7", sidebarFg:"#332a10" },
+  { place:"Rio Araguaia — praias e bancos de areia", uf:"GO / MT", coords:"14.93°S 51.08°O", img:"",
+    tones:["#a08348","#6f5a30","#43371c"], sidebarBg:"#eee0c4", sidebarFg:"#392e14" },
+  { place:"Parque Nacional das Emas — Cerrado x agricultura", uf:"GO", coords:"17.90°S 52.80°O", img:"",
+    tones:["#587a3e","#3c5928","#243515"], sidebarBg:"#e2ead0", sidebarFg:"#293a17" },
+  { place:"Cristalina — pivôs centrais (PAD-DF)", uf:"DF / GO", coords:"16.77°S 47.61°O", img:"",
+    tones:["#7a6a34","#524622","#312a14"], sidebarBg:"#e8e0c5", sidebarFg:"#332c11" },
+  { place:"Brasília — Plano Piloto e Lago Paranoá", uf:"DF", coords:"15.82°S 47.85°O", img:"",
+    tones:["#274b5e","#173341","#0f222c"], sidebarBg:"#d3e0e6", sidebarFg:"#12242e" },
+  { place:"Alto Xingu — nascentes e floresta", uf:"MT", coords:"11.50°S 53.50°O", img:"",
+    tones:["#1e4d2b","#12331c","#0a1f11"], sidebarBg:"#d3e4d7", sidebarFg:"#12291a" },
+];
+
+function gerarGradeMes(ano, mesIndex){
+  const primeiroDia = new Date(ano, mesIndex, 1).getDay(); // 0=Dom
+  const totalDias = new Date(ano, mesIndex+1, 0).getDate();
+  const diasMesAnterior = new Date(ano, mesIndex, 0).getDate();
+
+  let celulas = [];
+  for(let i=0;i<primeiroDia;i++){
+    celulas.push({n: diasMesAnterior - primeiroDia + 1 + i, other:true});
+  }
+  for(let d=1; d<=totalDias; d++){
+    celulas.push({n:d, other:false});
+  }
+  while(celulas.length % 7 !== 0){
+    celulas.push({n: celulas.length - (primeiroDia+totalDias) + 1, other:true});
+  }
+  let linhas = [];
+  for(let i=0;i<celulas.length;i+=7) linhas.push(celulas.slice(i,i+7));
+  return linhas;
+}
+
+function montarCalendarioHTML(ano, mesIndex){
+  const linhas = gerarGradeMes(ano, mesIndex);
+  let thead = "<tr>" + DIAS.map(d=>`<th>${d}</th>`).join("") + "</tr>";
+  let tbody = linhas.map(linha=>{
+    return "<tr>" + linha.map((c,idx)=>{
+      const weekend = (idx===0 || idx===6) && !c.other;
+      const ehFeriado = !c.other && FERIADOS[`${mesIndex}-${c.n}`];
+      let cls = c.other ? "other" : (weekend ? "weekend" : "");
+      if(ehFeriado) cls += " feriado";
+      return `<td class="${cls}">${c.n}</td>`;
+    }).join("") + "</tr>";
+  }).join("");
+  return `<table><thead>${thead}</thead><tbody>${tbody}</tbody></table>`;
+}
+
+function listarFeriadosDoMes(mesIndex){
+  const itens = Object.keys(FERIADOS)
+    .filter(k => k.startsWith(`${mesIndex}-`))
+    .map(k => ({ dia: parseInt(k.split("-")[1],10), nome: FERIADOS[k] }))
+    .sort((a,b) => a.dia - b.dia);
+  if(itens.length === 0) return "";
+  return `<div class="holidays">${itens.map(f=>`<div><span class="dot"></span>${f.dia} - ${f.nome}</div>`).join("")}</div>`;
+}
+
+const root = document.getElementById("calendar-root");
+const ANO = 2027;
+
+DADOS.forEach((item, i)=>{
+  const page = document.createElement("div");
+  page.className = "page";
+  page.style.setProperty("--sidebar-bg", item.sidebarBg);
+  page.style.setProperty("--sidebar-fg", item.sidebarFg);
+
+  const temImagem = item.img && item.img.trim() !== "";
+  const conteudoImagem = temImagem
+    ? `<img src="${item.img}" alt="${item.place}">`
+    : `<div class="placeholder" style="--tone-a:${item.tones[0]};--tone-b:${item.tones[1]};--tone-c:${item.tones[2]}">
+        <div class="coords">${item.coords}</div>
+        <div class="ph-note">SEM IMAGEM AINDA.<br>Preencha img:"0${i+1}-imagem.jpg" nos DADOS<br>com a imagem de satélite real de<br><strong>${item.place}, ${item.uf}</strong></div>
+      </div>`;
+  const monthBg = temImagem
+    ? `background-image:url('${item.img}');`
+    : `background-image:linear-gradient(160deg, ${item.tones[0]}, ${item.tones[1]} 60%, ${item.tones[2]});`;
+
+  page.innerHTML = `
+    <div class="frame">
+      ${conteudoImagem}
+    </div>
+    <div class="side">
+      <div class="side-top">
+        <div class="month" style="${monthBg}">${MESES_ABREV[i]}</div>
+        <div class="place">${item.place}<br>${item.uf}</div>
+        <div class="credit">imagem de satélite</div>
+        <div class="cal">${montarCalendarioHTML(ANO, i)}</div>
+        ${listarFeriadosDoMes(i)}
+        <div class="notes">
+          <div class="label">NOTAS</div>
+          <div class="box"></div>
+        </div>
+      </div>
+      <div class="side-bottom">
+        <div class="brand">BRASIL <span>· ${ANO}</span></div>
+      </div>
+    </div>
+  `;
+  root.appendChild(page);
+});
+</script>
+</body>
+</html>
