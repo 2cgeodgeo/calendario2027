@@ -206,15 +206,21 @@
   .notes .box{
     flex:1;
     min-height:64px;
+    position:relative;
     border-radius:10px;
     background-color: rgba(255,255,255,0.20);
+    border: 1px solid color-mix(in srgb, var(--sidebar-fg, #1b1d18) 30%, transparent);
+  }
+  .notes .box::before{
+    content:"";
+    position:absolute;
+    left:12px; right:12px; top:8px; bottom:12px;
     background-image: repeating-linear-gradient(
       to bottom,
       transparent 0, transparent 21px,
       color-mix(in srgb, var(--sidebar-fg, #1b1d18) 30%, transparent) 21px,
       color-mix(in srgb, var(--sidebar-fg, #1b1d18) 30%, transparent) 22px
     );
-    border: 1px solid rgba(255,255,255,0.40);
   }
 
   .side-bottom{
