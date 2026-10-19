@@ -193,7 +193,8 @@
     background:var(--sidebar-fg,#1b1d18);
     margin-top:6px; flex-shrink:0;
   }
-  .notes{ margin-top:16px; }
+  .side-top{ flex:1; display:flex; flex-direction:column; min-height:0; }
+  .notes{ margin-top:16px; flex:1; display:flex; flex-direction:column; min-height:0; }
   .notes .label{
     font-family:'IBM Plex Mono', monospace;
     font-size:9.5px;
@@ -203,7 +204,8 @@
     margin-bottom:6px;
   }
   .notes .box{
-    height:64px;
+    flex:1;
+    min-height:64px;
     border-radius:10px;
     background: rgba(255,255,255,0.55);
     border: 1px solid rgba(255,255,255,0.7);
