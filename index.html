@@ -21,6 +21,13 @@
     align-items:center;
     gap:36px;
   }
+  #calendar-root{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:24px;
+    width:100%;
+  }
   .intro{
     width:1280px;
     max-width:94vw;
@@ -251,6 +258,7 @@
   <h1>Calendário 2027 — Brasil visto do satélite</h1>
   <p>ÁREA: DF · GO · MT · MS — 12 QUADROS, CADA MÊS REPRESENTANDO UMA LINGUAGEM VISUAL
   DIFERENTE DO CENTRO-OESTE (ÁGUA, RELEVO, GEOMETRIA AGRÍCOLA, TECIDO URBANO).<br>
+  SUBSTITUA O BLOCO ".placeholder" PELA IMAGEM REAL (&lt;img src="sua-imagem.jpg"&gt;)
   BAIXADA DO SENTINEL HUB / COPERNICUS BROWSER / GOOGLE EARTH.</p>
 </div>
 
@@ -291,10 +299,10 @@ const FERIADOS = {
 const DADOS = [
   { place:"Brasília — Plano Piloto e Lago Paranoá", uf:"DF", coords:"15.82°S 47.85°O", img:"01-plano-piloto-df-janeiro.jpg",
     tones:["#274b5e","#173341","#0f222c"], sidebarBg:"#d3e0e6", sidebarFg:"#12242e" },
-  { place:"Nhecolândia — campos de lagoas", uf:"MS", coords:"18.99°S 56.62°O", img:"02-pantanal-matogrossense-mt-fevereiro.jpg",
-    tones:["#1f6a63","#124842","#0a2b27"], sidebarBg:"#cfe6e1", sidebarFg:"#0d2e29" },
-  { place:"Represa de Nova Ponte", uf:"Triângulo Mineiro, MG", coords:"19.17°S 47.67°O", img:"03-rio-tocantins-to-marco.jpg",
-    tones:["#2c5a6b","#1a3a46","#10242c"], sidebarBg:"#d2e2e6", sidebarFg:"#11262c" },
+  { place:"Pantanal Matogrossense", uf:"MT", coords:"16.60°S 56.70°O", img:"02-pantanal-matogrossense-mt-fevereiro.jpg",
+    tones:["#2e5a52","#1c3b38","#122522"], sidebarBg:"#d7e2df", sidebarFg:"#132825" },
+  { place:"Rio Tocantins", uf:"TO", coords:"", img:"03-rio-tocantins-to-marco.jpg",
+    tones:["#2f6b5e","#1d4a40","#10291f"], sidebarBg:"#d3e4dd", sidebarFg:"#12302a" },
   { place:"Serra do Amolar", uf:"MS", coords:"17.83°S 57.50°O", img:"",
     tones:["#4a5c3e","#313f27","#1c2417"], sidebarBg:"#dee5d3", sidebarFg:"#232c16" },
   { place:"Serra da Bodoquena", uf:"MS", coords:"21.20°S 56.47°O", img:"",
@@ -309,8 +317,8 @@ const DADOS = [
     tones:["#587a3e","#3c5928","#243515"], sidebarBg:"#e2ead0", sidebarFg:"#293a17" },
   { place:"Cristalina — pivôs centrais (PAD-DF)", uf:"DF / GO", coords:"16.77°S 47.61°O", img:"",
     tones:["#7a6a34","#524622","#312a14"], sidebarBg:"#e8e0c5", sidebarFg:"#332c11" },
-  { place:"Pantanal — mosaico de vazantes e corixos", uf:"MT", coords:"16.60°S 56.70°O", img:"",
-    tones:["#2e5a52","#1c3b38","#122522"], sidebarBg:"#d7e2df", sidebarFg:"#132825" },
+  { place:"Nhecolândia — campos de lagoas", uf:"MS", coords:"18.99°S 56.62°O", img:"",
+    tones:["#1f6a63","#124842","#0a2b27"], sidebarBg:"#cfe6e1", sidebarFg:"#0d2e29" },
   { place:"Alto Xingu — nascentes e floresta", uf:"MT", coords:"11.50°S 53.50°O", img:"",
     tones:["#1e4d2b","#12331c","#0a1f11"], sidebarBg:"#d3e4d7", sidebarFg:"#12291a" },
 ];
