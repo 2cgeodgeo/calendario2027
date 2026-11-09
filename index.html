@@ -202,6 +202,7 @@
     margin-top:6px; flex-shrink:0;
   }
   .side-top{ flex:1; display:flex; flex-direction:column; min-height:0; }
+  .mapa{ margin-top:14px; flex:1; min-height:0; color:var(--sidebar-fg,#1b1d18); display:flex; align-items:center; justify-content:center; }
   .notes{ margin-top:16px; flex:1; display:flex; flex-direction:column; min-height:0; }
   .notes .label{
     font-family:'IBM Plex Mono', monospace;
@@ -353,30 +354,42 @@ const FERIADOS = {
 // Para colocar sua imagem real: preencha o campo "img" com o nome do arquivo
 // (ex: img:"01-brasilia.jpg"), que deve estar NA MESMA PASTA que este arquivo HTML.
 // Enquanto "img" estiver vazio (""), o placeholder colorido continua aparecendo.
+const MAPA_SVG = '<svg viewBox="41 1 819 779" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><path d="M229,20 L227,52 L219,60 L169,60 L167,72 L159,80 L139,80 L137,129 L108,130 L107,160 L78,160 L77,232 L69,240 L47,242 L47,295 L69,297 L77,305 L79,317 L99,317 L107,325 L109,337 L129,337 L137,345 L139,357 L192,357 L194,345 L202,337 L219,337 L227,345 L229,377 L279,377 L287,385 L289,397 L309,397 L317,405 L319,456 L369,456 L377,464 L377,574 L399,576 L407,584 L409,597 L429,597 L437,605 L437,635 L459,637 L467,645 L467,652 L459,660 L439,660 L437,672 L429,680 L409,680 L407,692 L399,700 L377,702 L378,736 L399,737 L407,745 L409,757 L459,757 L467,765 L469,774 L522,774 L524,765 L532,757 L554,755 L554,724 L562,716 L584,714 L584,644 L592,636 L612,636 L614,624 L622,616 L642,616 L644,605 L652,597 L702,597 L704,584 L712,576 L734,574 L734,544 L742,536 L764,534 L764,464 L772,456 L794,454 L794,364 L802,356 L824,354 L824,324 L832,316 L854,314 L854,222 L835,220 L832,223 L824,215 L822,200 L802,200 L794,192 L794,182 L772,180 L764,172 L762,160 L682,160 L674,152 L674,142 L652,140 L644,132 L642,120 L592,120 L584,112 L582,100 L562,100 L554,92 L554,42 L532,40 L524,32 L522,20 L497,22 L497,52 L489,60 L382,60 L374,52 L372,7 L319,7 L309,20Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" opacity=".85"/><path d="M612,220 L557,222 L559,290 L557,314 L551,320 L410,320 L404,314 L402,260 L377,262 L380,292 L372,300 L317,302 L318,336 L342,337 L349,345 L347,394 L341,400 L317,402 L317,455 L371,457 L377,463 L377,575 L401,577 L407,583 L409,597 L462,596 L464,583 L470,577 L493,576 L494,523 L500,517 L582,517 L584,483 L590,477 L614,475Z" fill="currentColor" fill-opacity=".16" stroke="currentColor" stroke-width="3.6" stroke-linejoin="round"/></svg>';
+// Projeção do mapa estilizado da ASC (ajustada ao contorno: x/y em pixels da imagem original)
+function mapaComPino(item){
+  let pino = "";
+  if (typeof item.lat === "number") {
+    const x = 317 + (item.lon + 61.63) * 18.68;
+    const y = 220 + (-5.17 - item.lat) * 19.95;
+    pino = `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="27" fill="none" stroke="#d62d20" stroke-width="4" opacity=".55"/>`
+         + `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="13" fill="#d62d20" stroke="#fff" stroke-width="4.5"/>`;
+  }
+  return MAPA_SVG.replace("</svg>", pino + "</svg>");
+}
 const DADOS = [
-  { place:"Brasília — Plano Piloto e Lago Paranoá", uf:"DF", coords:"15.82°S 47.85°O", img:"01-plano-piloto-df-janeiro.jpg",
+  { place:"Brasília — Plano Piloto e Lago Paranoá", uf:"DF", lat:-15.82, lon:-47.85, coords:"15.82°S 47.85°O", img:"01-plano-piloto-df-janeiro.jpg",
     tones:["#274b5e","#173341","#0f222c"], sidebarBg:"#d3e0e6", sidebarFg:"#12242e" },
-  { place:"Pantanal Matogrossense", uf:"MT", coords:"16.60°S 56.70°O", img:"02-pantanal-matogrossense-mt-fevereiro.jpg",
+  { place:"Pantanal Matogrossense", uf:"MT", lat:-16.6, lon:-56.7, coords:"16.60°S 56.70°O", img:"02-pantanal-matogrossense-mt-fevereiro.jpg",
     tones:["#2e5a52","#1c3b38","#122522"], sidebarBg:"#d7e2df", sidebarFg:"#132825" },
-  { place:"Rio Tocantins", uf:"TO", coords:"", img:"03-rio-tocantins-to-marco.jpg",
+  { place:"Rio Tocantins", uf:"TO", lat:-10.2, lon:-48.35, coords:"", img:"03-rio-tocantins-to-marco.jpg",
     tones:["#2f6b5e","#1d4a40","#10291f"], sidebarBg:"#d3e4dd", sidebarFg:"#12302a" },
-  { place:"Naviraí", uf:"MS", coords:"23.06°S 54.20°O", img:"04-navirai-ms-abril.jpg",
+  { place:"Naviraí — traçado radial", uf:"MS", lat:-23.06, lon:-54.2, coords:"23.06°S 54.20°O", img:"04-navirai-ms-abril.jpg",
     tones:["#8a6a45","#5e4730","#392a1b"], sidebarBg:"#e6dccb", sidebarFg:"#3a2b17" },
-  { place:"Serra de Caldas Novas", uf:"GO", coords:"17.75°S 48.65°O", img:"05-caldas-novas-go-maio.jpg",
+  { place:"Serra de Caldas Novas", uf:"GO", lat:-17.75, lon:-48.65, coords:"17.75°S 48.65°O", img:"05-caldas-novas-go-maio.jpg",
     tones:["#6b6a3a","#4a4a28","#2c2c16"], sidebarBg:"#e3e1cb", sidebarFg:"#2f2e14" },
-  { place:"Cristalina", uf:"GO", coords:"15.41°S 55.83°O", img:"06-cristalina-df-go-junho.jpg",
-    tones:["#8b4a2b","#5e321d","#3a1f12"], sidebarBg:"#ecd9c9", sidebarFg:"#3a2113" },
-  { place:"Canyon das Bandeiras", uf:"TO", coords:"14.10°S 47.65°O", img:"07-canyon-das-bandeiras-to-julho.jpg",
-    tones:["#6b5a2c","#4a3d1e","#2e2512"], sidebarBg:"#e6ddc7", sidebarFg:"#332a10" },
-  { place:"Encontro rios Teles e Jurema", uf:"MT", coords:"14.93°S 51.08°O", img:"08-encontro-rios-teles-e-jurema-mt-agosto.jpg",
-    tones:["#a08348","#6f5a30","#43371c"], sidebarBg:"#eee0c4", sidebarFg:"#392e14" },
-  { place:"Usina Hidrelétrica de Serra da Mesa", uf:"GO", coords:"17.90°S 52.80°O", img:"09-usina-hidreletrica-de-serra-da-mesa-go-setembro.jpg",
-    tones:["#587a3e","#3c5928","#243515"], sidebarBg:"#e2ead0", sidebarFg:"#293a17" },
-  { place:"Campos de Arroz - Formoso do Araguaia", uf:"TO", coords:"16.77°S 47.61°O", img:"10-campos-de-arroz-formoso-do-araguaia-to-outubro.jpg",
-    tones:["#7a6a34","#524622","#312a14"], sidebarBg:"#e8e0c5", sidebarFg:"#332c11" },
-  { place:"Nhecolândia — campos de lagoas", uf:"MS", coords:"18.99°S 56.62°O", img:"",
+  { place:"Cristalina — pivôs centrais", uf:"DF / GO", lat:-16.77, lon:-47.61, coords:"16.77°S 47.61°O", img:"06-cristalina-df-go-junho.jpg",
+    tones:["#5a7a3a","#3d5628","#243515"], sidebarBg:"#e0e8cf", sidebarFg:"#26361a" },
+  { place:"Cânion das Bandeiras", uf:"TO", lat:-10.2, lon:-48.3, coords:"", img:"07-canyon-das-bandeiras-to-julho.jpg",
+    tones:["#7a7a45","#53532c","#2f3018"], sidebarBg:"#e4e3cc", sidebarFg:"#30301a" },
+  { place:"Encontro dos rios Teles Pires e Juruena", uf:"MT", lat:-7.35, lon:-57.5, coords:"", img:"08-encontro-rios-teles-e-jurema-mt-agosto.jpg",
+    tones:["#2f5a2c","#1e3d1c","#10240f"], sidebarBg:"#d6e4d0", sidebarFg:"#16301a" },
+  { place:"Usina Hidrelétrica de Serra da Mesa", uf:"GO", lat:-13.83, lon:-48.3, coords:"", img:"09-usina-hidreletrica-de-serra-da-mesa-go-setembro.jpg",
+    tones:["#2c5a3a","#1b3d28","#0f2418"], sidebarBg:"#d3e4d8", sidebarFg:"#14301f" },
+  { place:"Campos de arroz — Formoso do Araguaia", uf:"TO", lat:-11.8, lon:-49.52, coords:"", img:"10-campos-de-arroz-formoso-do-araguaia-to-outubro.jpg",
+    tones:["#4f7a3a","#365428","#1f3315"], sidebarBg:"#dde8d0", sidebarFg:"#24381a" },
+  { place:"Nhecolândia — campos de lagoas", uf:"MS", lat:-18.99, lon:-56.62, coords:"18.99°S 56.62°O", img:"",
     tones:["#1f6a63","#124842","#0a2b27"], sidebarBg:"#cfe6e1", sidebarFg:"#0d2e29" },
-  { place:"Alto Xingu — nascentes e floresta", uf:"MT", coords:"11.50°S 53.50°O", img:"",
+  { place:"Alto Xingu — nascentes e floresta", uf:"MT", lat:-11.5, lon:-53.5, coords:"11.50°S 53.50°O", img:"",
     tones:["#1e4d2b","#12331c","#0a1f11"], sidebarBg:"#d3e4d7", sidebarFg:"#12291a" },
 ];
 
@@ -456,10 +469,7 @@ DADOS.forEach((item, i)=>{
         <div class="credit">imagem de satélite</div>
         <div class="cal">${montarCalendarioHTML(ANO, i)}</div>
         ${listarFeriadosDoMes(i)}
-        <div class="notes">
-          <div class="label">NOTAS</div>
-          <div class="box"></div>
-        </div>
+        <div class="mapa" title="ASC do 2º CGEO">${mapaComPino(item)}</div>
       </div>
       <div class="side-bottom">
         <div class="brand">BRASIL <span>· ${ANO}</span></div>
