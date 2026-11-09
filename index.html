@@ -52,7 +52,7 @@
   .page{
     width:1280px;
     max-width:94vw;
-    aspect-ratio: 16/9;
+    aspect-ratio: 210/148;
     background:var(--paper);
     position:relative;
     overflow:hidden;
@@ -111,6 +111,7 @@
   }
 
   /* ---- sidebar ---- */
+  .side::before{ content:""; position:absolute; left:0; top:0; bottom:118px; width:1px; background:rgba(255,255,255,0.18); }
   .side{
     width:270px;
     flex-shrink:0;
@@ -124,7 +125,6 @@
     display:flex;
     flex-direction:column;
     justify-content:space-between;
-    border-left: 1px solid rgba(255,255,255,0.18);
   }
   .side-top .month{
     font-family:'Archivo Black', sans-serif;
@@ -202,6 +202,16 @@
     margin-top:6px; flex-shrink:0;
   }
   .side-top{ flex:1; display:flex; flex-direction:column; min-height:0; }
+  .canto{
+    position:absolute; right:270px; bottom:88px; width:30px; height:30px; z-index:2;
+    background: color-mix(in srgb, var(--sidebar-bg, #dfe3d6) 58%, transparent);
+    backdrop-filter: blur(7px) saturate(115%);
+    -webkit-backdrop-filter: blur(7px) saturate(115%);
+    -webkit-mask: radial-gradient(circle at 0 0, transparent 29.5px, #000 30px);
+            mask: radial-gradient(circle at 0 0, transparent 29.5px, #000 30px);
+  }
+  .canto-linha{ position:absolute; right:270px; bottom:88px; width:30px; height:30px; z-index:3; pointer-events:none; }
+  .notas-faixa::before{ content:""; position:absolute; left:0; right:30px; top:0; height:1px; background:rgba(255,255,255,0.18); }
   .notas-faixa{
     position:absolute; left:0; right:270px; bottom:0; height:88px; z-index:2;
     padding:10px 26px 12px;
@@ -319,10 +329,18 @@
     filter: drop-shadow(0 7px 10px rgba(0,0,0,0.50)) drop-shadow(0 24px 38px rgba(0,0,0,0.45));
   }
 
+  /* ---- Impressão em A5 paisagem (210 x 148 mm) ---- */
+  @page{ size:210mm 148mm; margin:0; }
   @media print{
-    body{ background:none; padding:0; gap:0; }
-    .intro{ display:none; }
-    .page{ box-shadow:none; page-break-after: always; width:100%; aspect-ratio:auto; height:100vh; }
+    *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    html, body{ background:none; padding:0; margin:0; gap:0; }
+    #calendar-root{ display:block; gap:0; width:auto; }
+    .intro, .tag{ display:none; }
+    .page{
+      box-shadow:none; break-after:page; page-break-after:always;
+      width:1280px; max-width:none; height:902.1px; aspect-ratio:auto;
+      zoom:0.62008;
+    }
   }
 </style>
 </head>
@@ -491,6 +509,8 @@ DADOS.forEach((item, i)=>{
         <div class="brand">BRASIL <span>· ${ANO}</span></div>
       </div>
     </div>
+    <div class="canto"></div>
+    <div class="canto-linha"><svg width="30" height="30" viewBox="0 0 30 30"><path d="M30,0 A30,30 0 0 1 0,30" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/></svg></div>
     <div class="notas-faixa"><div class="label">NOTAS</div><div class="linhas"></div></div>
   `;
   const tagA = document.createElement("div");
