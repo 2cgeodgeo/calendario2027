@@ -111,7 +111,7 @@
   }
 
   /* ---- sidebar ---- */
-  .side::before{ content:""; position:absolute; left:0; top:0; bottom:118px; width:1px; background:rgba(255,255,255,0.18); }
+  .side::before{ content:""; position:absolute; left:0; top:0; bottom:0; width:1px; background:rgba(255,255,255,0.18); }
   .side{
     width:270px;
     flex-shrink:0;
@@ -121,7 +121,7 @@
     background: color-mix(in srgb, var(--sidebar-bg, #dfe3d6) 58%, transparent);
     backdrop-filter: blur(7px) saturate(115%);
     -webkit-backdrop-filter: blur(7px) saturate(115%);
-    padding:26px 22px 20px;
+    padding:68px 22px 20px;
     display:flex;
     flex-direction:column;
     justify-content:space-between;
@@ -173,14 +173,14 @@
   .cal th, .cal td{
     text-align:center;
     font-family:'IBM Plex Mono', monospace;
-    font-size:12px;
-    padding:4px 0;
+    font-size:14px;
+    padding:7px 0;
     color: var(--sidebar-fg, #1b1d18);
   }
   .cal th{
     opacity:0.55;
     font-weight:500;
-    font-size:10.5px;
+    font-size:11px;
   }
   .cal td.other{ opacity:0.28; }
   .cal td.weekend{ opacity:0.6; }
@@ -191,9 +191,9 @@
     margin-top:10px;
     font-family:'IBM Plex Mono', monospace;
     font-size:10.5px;
-    line-height:1.6;
+    line-height:1.7;
     color: var(--sidebar-fg, #1b1d18);
-    opacity:0.8;
+    opacity:0.85;
   }
   .holidays div{ display:flex; gap:6px; }
   .holidays .dot{
@@ -212,6 +212,12 @@
   }
   .canto-linha{ position:absolute; right:270px; bottom:88px; width:30px; height:30px; z-index:3; pointer-events:none; }
   .notas-faixa::before{ content:""; position:absolute; left:0; right:30px; top:0; height:1px; background:rgba(255,255,255,0.18); }
+  .mapa{ flex-direction:column; gap:10px; }
+  .mapa .svgbox{ flex:1; min-height:0; width:100%; }
+  .mapa .leg{ font-family:'IBM Plex Mono', monospace; font-size:9.5px; line-height:1.6; text-align:center; opacity:.8; white-space:nowrap; }
+  .mapa .leg b{ font-weight:500; letter-spacing:.5px; }
+  .mapa .leg i{ display:inline-block; width:8px; height:8px; border-radius:50%; background:#d62d20; border:1.5px solid #fff; vertical-align:-1px; margin-right:4px; }
+  .mapa .leg u{ display:inline-block; width:12px; height:8px; border:1.5px solid currentColor; background:color-mix(in srgb, currentColor 16%, transparent); text-decoration:none; vertical-align:-1px; margin-right:4px; }
   .notas-faixa{
     position:absolute; left:0; right:270px; bottom:0; height:88px; z-index:2;
     padding:10px 26px 12px;
@@ -358,7 +364,7 @@
 
 <script>
 const MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
-const MESES_ABREV = ["JAN","FEV","MAR","ABR","MAI","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
+const MESES_ABREV = ["JAN","FEV","MAR","ABR","MAIO","JUN","JUL","AGO","SET","OUT","NOV","DEZ"];
 const DIAS = ["D","S","T","Q","Q","S","S"]; // Domingo a Sábado
 
 // Feriados nacionais 2027 (mesIndex 0-based: 0=Janeiro ... 11=Dezembro)
@@ -400,12 +406,26 @@ function mapaComPino(item){
   }
   return MAPA_SVG.replace("</svg>", pino + "</svg>");
 }
+// Legenda do mapa (coordenadas só quando conhecidas)
+function fmtCoord(v, pos, neg){
+  const a = Math.abs(v);
+  let g = Math.floor(a), m = Math.floor((a - g) * 60), sg = Math.round(((a - g) * 60 - m) * 60);
+  if (sg === 60) { sg = 0; m += 1; }
+  if (m === 60) { m = 0; g += 1; }
+  const p = n => String(n).padStart(2, "0");
+  return g + "°" + p(m) + "′" + p(sg) + "″" + (v < 0 ? neg : pos);
+}
+function legendaMapa(item){
+  const c = (typeof item.lat === "number" && !item.semCoord)
+    ? `<div><b>${fmtCoord(item.lat,"N","S")} ${fmtCoord(item.lon,"L","O")}</b></div>` : "";
+  return c ? `<div class="leg">${c}</div>` : "";
+}
 const DADOS = [
   { place:"Plano Piloto e Lago Paranoá — Brasília", uf:"DF", lat:-15.79, lon:-47.88, coords:"", img:"01-plano-piloto-df-janeiro.jpg",
     tones:["#274b5e","#173341","#0f222c"], sidebarBg:"#d3e0e6", sidebarFg:"#12242e" },
   { place:"Lagoas Salinas — Corumbá", uf:"MT", lat:-16.6, lon:-56.7, coords:"", img:"02-pantanal-matogrossense-mt-fevereiro.jpg",
     tones:["#2e5a52","#1c3b38","#122522"], sidebarBg:"#d7e2df", sidebarFg:"#132825" },
-  { place:"Rio Tocantins", uf:"TO", lat:-10.2, lon:-48.35, coords:"", img:"03-rio-tocantins-to-marco.jpg",
+  { place:"Rio Tocantins", uf:"TO", semCoord:true, lat:-10.2, lon:-48.35, coords:"", img:"03-rio-tocantins-to-marco.jpg",
     tones:["#2f6b5e","#1d4a40","#10291f"], sidebarBg:"#d3e4dd", sidebarFg:"#12302a" },
   { place:"Naviraí — traçado radial", uf:"MS", lat:-23.06, lon:-54.19, coords:"", img:"04-navirai-ms-abril.jpg",
     tones:["#8a6a45","#5e4730","#392a1b"], sidebarBg:"#e6dccb", sidebarFg:"#3a2b17" },
@@ -413,7 +433,7 @@ const DADOS = [
     tones:["#6b6a3a","#4a4a28","#2c2c16"], sidebarBg:"#e3e1cb", sidebarFg:"#2f2e14" },
   { place:"Cristalina — pivôs centrais", uf:"DF / GO", lat:-16.77, lon:-47.61, coords:"16.77°S 47.61°O", img:"06-cristalina-df-go-junho.jpg",
     tones:["#5a7a3a","#3d5628","#243515"], sidebarBg:"#e0e8cf", sidebarFg:"#26361a" },
-  { place:"Cânion das Bandeiras", uf:"TO", lat:-10.2, lon:-48.3, coords:"", img:"07-canyon-das-bandeiras-to-julho.jpg",
+  { place:"Cânion das Bandeiras", uf:"TO", semCoord:true, lat:-10.2, lon:-48.3, coords:"", img:"07-canyon-das-bandeiras-to-julho.jpg",
     tones:["#7a7a45","#53532c","#2f3018"], sidebarBg:"#e4e3cc", sidebarFg:"#30301a" },
   { place:"Encontro dos rios Teles Pires e Juruena", uf:"MT", lat:-7.35, lon:-58.14, coords:"", img:"08-encontro-rios-teles-e-jurema-mt-agosto.jpg",
     tones:["#2f5a2c","#1e3d1c","#10240f"], sidebarBg:"#d6e4d0", sidebarFg:"#16301a" },
@@ -423,7 +443,7 @@ const DADOS = [
     tones:["#4f7a3a","#365428","#1f3315"], sidebarBg:"#dde8d0", sidebarFg:"#24381a" },
   { place:"Jalapão", uf:"TO", lat:-10.55, lon:-46.85, coords:"", img:"11-jalapao-to-novembro.jpg",
     tones:["#a68a58","#7c6540","#4a3b22"], sidebarBg:"#e9dfc6", sidebarFg:"#3a2e17" },
-  { place:"Nova Crixás", uf:"GO", lat:-14.1, lon:-50.33, coords:"", img:"12-nova-crixas-go-dezembro.jpg",
+  { place:"Nova Crixás", uf:"GO", lat:-14.041620, lon:-50.462719, coords:"", img:"12-nova-crixas-go-dezembro.jpg",
     tones:["#8a6a52","#5c4638","#33261e"], sidebarBg:"#e8dccf", sidebarFg:"#35261c" },
 ];
 
@@ -498,20 +518,17 @@ DADOS.forEach((item, i)=>{
     </div>
     <div class="side">
       <div class="side-top">
-        <div class="month" style="${monthBg}">${MESES_ABREV[i]}</div>
+        <div class="month" style="${monthBg}${MESES_ABREV[i].length > 3 ? 'font-size:72px;margin-top:4px;margin-bottom:4.5px;' : ''}">${MESES_ABREV[i]}</div>
         <div class="place">${item.place}<br>${item.uf}</div>
         <div class="credit">imagem de satélite</div>
         <div class="cal">${montarCalendarioHTML(ANO, i)}</div>
         ${listarFeriadosDoMes(i)}
-        <div class="mapa" title="ASC do 2º CGEO">${mapaComPino(item)}</div>
+        <div class="mapa" title="ASC do 2º CGEO" style="margin-bottom:30px"><div class="svgbox">${mapaComPino(item)}</div>${legendaMapa(item)}</div>
       </div>
       <div class="side-bottom">
         <div class="brand">BRASIL <span>· ${ANO}</span></div>
       </div>
     </div>
-    <div class="canto"></div>
-    <div class="canto-linha"><svg width="30" height="30" viewBox="0 0 30 30"><path d="M30,0 A30,30 0 0 1 0,30" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/></svg></div>
-    <div class="notas-faixa"><div class="label">NOTAS</div><div class="linhas"></div></div>
   `;
   const tagA = document.createElement("div");
   tagA.className = "tag";
