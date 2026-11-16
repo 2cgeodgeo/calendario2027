@@ -421,8 +421,8 @@ function legendaMapa(item){
 const DADOS = [
   { place:"Plano Piloto e Lago Paranoá — Brasília", uf:"DF", lat:-15.79, lon:-47.88, coords:"", img:"01-plano-piloto-df-janeiro.jpg",
     tones:["#274b5e","#173341","#0f222c"], sidebarBg:"#d3e0e6", sidebarFg:"#12242e" },
-  { place:"Lagoas Salinas — Corumbá", uf:"MT", lat:-16.6, lon:-56.7, coords:"", img:"02-lagoas-salinas-corumba-ms-fevereiro.jpg",
-    tones:["#2e5a52","#1c3b38","#122522"], sidebarBg:"#d7e2df", sidebarFg:"#132825" },
+  { place:"Lagoas Salinas — Corumbá", uf:"MS", lat:-18.99, lon:-56.62, coords:"", img:"02-lagoas-salinas-corumba-ms-fevereiro.jpg",
+    tones:["#4a6b3a","#2f4a28","#1c2e17"], sidebarBg:"#dfe4d0", sidebarFg:"#25331a" },
   { place:"Rio Tocantins — Tocantins", uf:"TO", semCoord:true, lat:-10.2, lon:-48.35, coords:"", img:"03-rio-tocantins-to-marco.jpg",
     tones:["#2f6b5e","#1d4a40","#10291f"], sidebarBg:"#d3e4dd", sidebarFg:"#12302a" },
   { place:"Traçado Radial — Naviraí", uf:"MS", lat:-23.06, lon:-54.19, coords:"", img:"04-navirai-ms-abril.jpg",
@@ -431,18 +431,18 @@ const DADOS = [
     tones:["#6b6a3a","#4a4a28","#2c2c16"], sidebarBg:"#e3e1cb", sidebarFg:"#2f2e14" },
   { place:"Campo de Pivôs — Cristalina", uf:"DF / GO", lat:-16.77, lon:-47.61, coords:"16.77°S 47.61°O", img:"06-cristalina-df-go-junho.jpg",
     tones:["#5a7a3a","#3d5628","#243515"], sidebarBg:"#e0e8cf", sidebarFg:"#26361a" },
-  { place:"Cânion das Bandeiras — Almas", uf:"TO", semCoord:true, lat:-10.2, lon:-48.3, coords:"", img:"07-canyon-das-bandeiras-to-julho.jpg",
+  { place:"Cânion das Bandeiras — Almas", uf:"TO", semCoord:true, lat:-11.57, lon:-47.17, coords:"", img:"07-canyon-das-bandeiras-to-julho.jpg",
     tones:["#7a7a45","#53532c","#2f3018"], sidebarBg:"#e4e3cc", sidebarFg:"#30301a" },
   { place:"Encontro dos rios Teles Pires e Juruena — Apiacás ", uf:"MT", lat:-7.35, lon:-58.14, coords:"", img:"08-encontro-rios-teles-e-jurema-mt-agosto.jpg",
     tones:["#2f5a2c","#1e3d1c","#10240f"], sidebarBg:"#d6e4d0", sidebarFg:"#16301a" },
   { place:"Usina Hidrelétrica de Serra da Mesa — Minaçu", uf:"GO", lat:-13.83, lon:-48.3, coords:"", img:"09-usina-hidreletrica-de-serra-da-mesa-go-setembro.jpg",
     tones:["#2c5a3a","#1b3d28","#0f2418"], sidebarBg:"#d3e4d8", sidebarFg:"#14301f" },
-  { place:"2° Centro de Geoinformação — Brasília", uf:"DF", lat:-11.8, lon:-49.52, coords:"", img:"dji_export_1663684319471.jpg_902264b6_2K.jpg",
-    tones:["#4f7a3a","#365428","#1f3315"], sidebarBg:"#dde8d0", sidebarFg:"#24381a" },
+  { place:"2° Centro de Geoinformação — Brasília", uf:"DF", semCoord:true, credito:"fotografia aérea", lat:-15.80, lon:-47.88, coords:"", img:"10-2cgeo-sede-df-outubro.jpg",
+    tones:["#8a3b2c","#5a2a20","#2f1812"], sidebarBg:"#ebe4dd", sidebarFg:"#33201a" },
   { place:"Serra do Espírito Santo — Jalapão", uf:"TO", lat:-10.55, lon:-46.85, coords:"", img:"11-jalapao-to-novembro.jpg",
     tones:["#a68a58","#7c6540","#4a3b22"], sidebarBg:"#e9dfc6", sidebarFg:"#3a2e17" },
-  { place:"Campos de Arroz — Formoso do Araguaia", uf:"TO", lat:-14.041620, lon:-50.462719, coords:"", img:"10-campos-de-arroz-formoso-do-araguaia-to-outubro.jpg",
-    tones:["#8a6a52","#5c4638","#33261e"], sidebarBg:"#e8dccf", sidebarFg:"#35261c" },
+  { place:"Campos de Arroz — Formoso do Araguaia", uf:"TO", lat:-11.8, lon:-49.52, coords:"", img:"10-campos-de-arroz-formoso-do-araguaia-to-outubro.jpg",
+    tones:["#4f7a3a","#365428","#1f3315"], sidebarBg:"#dde8d0", sidebarFg:"#24381a" },
 ];
 
 function gerarGradeMes(ano, mesIndex){
@@ -518,7 +518,7 @@ DADOS.forEach((item, i)=>{
       <div class="side-top">
         <div class="month" style="${monthBg}${MESES_ABREV[i].length > 3 ? 'font-size:72px;margin-top:4px;margin-bottom:4.5px;' : ''}">${MESES_ABREV[i]}</div>
         <div class="place">${item.place}<br>${item.uf}</div>
-        <div class="credit">imagem de satélite</div>
+        <div class="credit">${item.credito || "imagem de satélite"}</div>
         <div class="cal">${montarCalendarioHTML(ANO, i)}</div>
         ${listarFeriadosDoMes(i)}
         <div class="mapa" title="ASC do 2º CGEO" style="margin-bottom:30px"><div class="svgbox">${mapaComPino(item)}</div>${legendaMapa(item)}</div>
@@ -530,11 +530,11 @@ DADOS.forEach((item, i)=>{
   `;
   const tagA = document.createElement("div");
   tagA.className = "tag";
-  tagA.textContent = `${MESES[i].toUpperCase()} — OPÇÃO A (CAPA COM CALENDÁRIO)`;
+  tagA.textContent = `${MESES[i].toUpperCase()} — CALENDÁRIO (OPÇÃO A)`;
 
   const tagB = document.createElement("div");
   tagB.className = "tag";
-  tagB.textContent = `${MESES[i].toUpperCase()} — OPÇÃO B (IMAGEM COM DESTAQUE)`;
+  tagB.textContent = `${MESES[i].toUpperCase()} — CAPA DO MÊS (OPÇÃO B)`;
 
   const alt = document.createElement("div");
   alt.className = "page alt";
@@ -547,10 +547,10 @@ DADOS.forEach((item, i)=>{
     <div class="caption">${item.place} · ${item.uf}</div>
   `;
 
-  root.appendChild(tagA);
-  root.appendChild(page);
   root.appendChild(tagB);
   root.appendChild(alt);
+  root.appendChild(tagA);
+  root.appendChild(page);
 });
 </script>
 </body>
